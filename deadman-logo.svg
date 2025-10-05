@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <!-- Advanced gradients and effects -->
+    <radialGradient id="skullGradient" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#b8c8d8;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8898a8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a5a6a;stop-opacity:1" />
+    </radialGradient>
+    
+    <radialGradient id="eyeSocketGradient" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#2a2a2a;stop-opacity:1" />
+      <stop offset="80%" style="stop-color:#000000;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </radialGradient>
+    
+    <radialGradient id="redEyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ff3333;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#ff0000;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#cc0000;stop-opacity:0.6" />
+    </radialGradient>
+    
+    <filter id="intenseGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="redAura" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="25" result="glow"/>
+      <feMerge> 
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Dark background with red energy -->
+  <circle cx="100" cy="100" r="100" fill="#000000" opacity="0.9"/>
+  
+  <!-- Red energy ring -->
+  <circle cx="100" cy="100" r="85" fill="none" stroke="#ff0000" stroke-width="4" opacity="0.8" filter="url(#redAura)">
+    <animate attributeName="stroke-width" values="3;5;3" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Main skull structure -->
+  <g transform="translate(100, 90)">
+    <!-- Skull base with realistic shape -->
+    <path d="M -38 -35 Q -42 -50 -25 -55 Q 0 -60 25 -55 Q 42 -50 38 -35 Q 40 -20 38 -5 Q 35 10 28 20 Q 20 30 10 35 Q 0 38 -10 35 Q -20 30 -28 20 Q -35 10 -38 -5 Q -40 -20 -38 -35 Z" 
+          fill="url(#skullGradient)" stroke="#3a4a5a" stroke-width="1"/>
+    
+    <!-- Forehead ridges and details -->
+    <path d="M -30 -45 Q -15 -50 0 -50 Q 15 -50 30 -45" stroke="#6a7a8a" stroke-width="1" fill="none" opacity="0.7"/>
+    <path d="M -25 -40 Q 0 -42 25 -40" stroke="#6a7a8a" stroke-width="1" fill="none" opacity="0.5"/>
+    
+    <!-- Realistic skull cracks -->
+    <path d="M -15 -45 L -12 -30 L -8 -15" stroke="#3a3a3a" stroke-width="1" opacity="0.8"/>
+    <path d="M 8 -40 L 12 -25 L 15 -10" stroke="#3a3a3a" stroke-width="1" opacity="0.8"/>
+    <path d="M -22 -20 L -18 -5 L -15 10" stroke="#3a3a3a" stroke-width="1" opacity="0.6"/>
+    
+    <!-- Eye sockets - large and deep -->
+    <ellipse cx="-18" cy="-20" rx="12" ry="16" fill="url(#eyeSocketGradient)" opacity="0.95"/>
+    <ellipse cx="18" cy="-20" rx="12" ry="16" fill="url(#eyeSocketGradient)" opacity="0.95"/>
+    
+    <!-- Inner eye socket shadows -->
+    <ellipse cx="-18" cy="-18" rx="8" ry="12" fill="#000000" opacity="0.8"/>
+    <ellipse cx="18" cy="-18" rx="8" ry="12" fill="#000000" opacity="0.8"/>
+    
+    <!-- Intense glowing red eyes -->
+    <circle cx="-18" cy="-20" r="4" fill="url(#redEyeGlow)" filter="url(#intenseGlow)">
+      <animate attributeName="r" values="3;5;3" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="18" cy="-20" r="4" fill="url(#redEyeGlow)" filter="url(#intenseGlow)">
+      <animate attributeName="r" values="3;5;3" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Nasal cavity - more realistic -->
+    <path d="M 0 -8 L -5 5 L -3 15 L 0 18 L 3 15 L 5 5 Z" fill="#000000" opacity="0.9"/>
+    <path d="M -2 0 L 0 8 L 2 0" stroke="#2a2a2a" stroke-width="1" fill="none"/>
+    
+    <!-- Cheekbone definition -->
+    <path d="M -32 -10 Q -28 -5 -25 0" stroke="#6a7a8a" stroke-width="1" fill="none" opacity="0.6"/>
+    <path d="M 32 -10 Q 28 -5 25 0" stroke="#6a7a8a" stroke-width="1" fill="none" opacity="0.6"/>
+    
+    <!-- Jaw structure -->
+    <path d="M -30 15 Q -20 25 -10 30 Q 0 32 10 30 Q 20 25 30 15" stroke="#5a6a7a" stroke-width="2" fill="none"/>
+    
+    <!-- Realistic teeth with variations -->
+    <rect x="-20" y="25" width="3" height="9" fill="#f5f5f5" opacity="0.9" rx="1"/>
+    <rect x="-15" y="25" width="3" height="12" fill="#f0f0f0" opacity="0.9" rx="1"/>
+    <rect x="-10" y="25" width="3" height="11" fill="#f5f5f5" opacity="0.9" rx="1"/>
+    <rect x="-5" y="25" width="3" height="13" fill="#f0f0f0" opacity="0.9" rx="1"/>
+    <rect x="0" y="25" width="3" height="12" fill="#f5f5f5" opacity="0.9" rx="1"/>
+    <rect x="5" y="25" width="3" height="13" fill="#f0f0f0" opacity="0.9" rx="1"/>
+    <rect x="10" y="25" width="3" height="11" fill="#f5f5f5" opacity="0.9" rx="1"/>
+    <rect x="15" y="25" width="3" height="12" fill="#f0f0f0" opacity="0.9" rx="1"/>
+    <rect x="20" y="25" width="3" height="9" fill="#f5f5f5" opacity="0.9" rx="1"/>
+    
+    <!-- Tooth shadows -->
+    <rect x="-19" y="32" width="2" height="2" fill="#d0d0d0" opacity="0.6"/>
+    <rect x="-14" y="35" width="2" height="2" fill="#d0d0d0" opacity="0.6"/>
+    <rect x="-9" y="34" width="2" height="2" fill="#d0d0d0" opacity="0.6"/>
+  </g>
+  
+  <!-- Outer red energy effects -->
+  <circle cx="100" cy="100" r="90" fill="none" stroke="#ff0000" stroke-width="1" opacity="0.4" filter="url(#redAura)"/>
+  <circle cx="100" cy="100" r="95" fill="none" stroke="#ff3333" stroke-width="1" opacity="0.2" filter="url(#redAura)"/>
+  
+  <!-- DEADMAN text with intense effects -->
+  <text x="100" y="175" text-anchor="middle" font-family="Impact, Arial Black" font-size="20" font-weight="bold" 
+        fill="#ff0000" filter="url(#intenseGlow)" opacity="0.9">DEADMAN</text>
+</svg>
