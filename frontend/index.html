@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEADMAN - Blockchain Explorer</title>
+    <link rel="icon" type="image/svg+xml" href="deadman-token-logo.svg">
+    <link rel="shortcut icon" type="image/svg+xml" href="deadman-token-logo.svg">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&family=Butcherman&family=Metal+Mania:wght@400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Metal Mania', 'Butcherman', cursive;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 25%, #000000 50%, #1a0000 75%, #0a0a0a 100%);
+            background-size: 400% 400%;
+            animation: bloodFlow 10s ease-in-out infinite;
+            min-height: 100vh;
+            color: #ff3333;
+            overflow-x: hidden;
+        }
+        
+        @keyframes bloodFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        /* Scary background effects */
+        .container::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="%23ff0000" opacity="0.1"/><circle cx="80" cy="40" r="1" fill="%23ff0000" opacity="0.1"/><circle cx="40" cy="80" r="1" fill="%23ff0000" opacity="0.1"/></svg>');
+            animation: floatingParticles 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        @keyframes floatingParticles {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
+        }
+
+        header {
+            text-align: center;
+            color: #ff0000;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #ff0000 0%, transparent 70%);
+            opacity: 0.3;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+            50% { transform: translateX(-50%) scale(1.2); opacity: 0.6; }
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, #1a0000, #000000);
+            border: 2px solid #330000;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(255, 0, 0, 0.1),
+                0 0 20px rgba(255, 0, 0, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 0, 0, 0.03), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+        
+        .stat-card:hover::before {
+            animation: shimmer 1.5s ease-in-out;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: #ff0000;
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.9),
+                inset 0 1px 0 rgba(255, 0, 0, 0.3),
+                0 0 30px rgba(255, 0, 0, 0.4);
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff3333;
+            margin-bottom: 15px;
+            font-family: 'Butcherman', cursive;
+            text-shadow: 
+                0 0 10px #ff0000,
+                0 0 20px #ff0000;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #cc9999;
+            font-family: 'Metal Mania', cursive;
+            text-shadow: 0 0 5px rgba(204, 153, 153, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .control-section {
+            background: linear-gradient(145deg, #1a0000, #000000);
+            border: 2px solid #330000;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(255, 0, 0, 0.1),
+                0 0 25px rgba(255, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .control-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.05), transparent);
+            transition: left 0.5s;
+        }
+        
+        .control-section:hover::before {
+            left: 100%;
+        }
+
+        .control-section h3 {
+            margin-bottom: 25px;
+            color: #ff3333;
+            font-family: 'Butcherman', cursive;
+            font-size: 1.5rem;
+            border-bottom: 3px solid #ff0000;
+            padding-bottom: 12px;
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #ff6666;
+            font-family: 'Metal Mania', cursive;
+            text-shadow: 0 0 5px rgba(255, 102, 102, 0.3);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #330000;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Metal Mania', cursive;
+            background: linear-gradient(145deg, #0a0000, #1a0000);
+            color: #ff9999;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #ff0000;
+            box-shadow: 
+                inset 0 2px 5px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(255, 0, 0, 0.3);
+            background: linear-gradient(145deg, #1a0000, #2a0000);
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: #666666;
+            font-style: italic;
+        }
+
+        button {
+            background: linear-gradient(145deg, #330000, #660000);
+            color: #ff9999;
+            border: 2px solid #ff0000;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Butcherman', cursive;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-shadow: 0 0 5px rgba(255, 153, 153, 0.5);
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.3), transparent);
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(145deg, #660000, #990000);
+            border-color: #ff3333;
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 0, 0, 0.4),
+                0 0 20px rgba(255, 0, 0, 0.4);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        .blockchain-display {
+            background: linear-gradient(145deg, #1a0000, #000000);
+            border: 2px solid #330000;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(255, 0, 0, 0.1),
+                0 0 25px rgba(255, 0, 0, 0.15);
+        }
+        
+        .blockchain-display h3 {
+            color: #ff3333;
+            font-family: 'Butcherman', cursive;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+            margin-bottom: 25px;
+            border-bottom: 3px solid #ff0000;
+            padding-bottom: 12px;
+        }
+
+        .block {
+            background: linear-gradient(145deg, #0a0000, #1a0000);
+            border: 2px solid #660000;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.05), transparent);
+            transition: left 0.6s;
+        }
+
+        .block:hover {
+            border-color: #ff0000;
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 
+                0 12px 30px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(255, 0, 0, 0.2),
+                0 0 20px rgba(255, 0, 0, 0.3);
+        }
+        
+        .block:hover::before {
+            left: 100%;
+        }
+
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .block-index {
+            background: linear-gradient(145deg, #660000, #990000);
+            color: #ff9999;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-family: 'Butcherman', cursive;
+            text-shadow: 0 0 5px rgba(255, 153, 153, 0.5);
+            border: 1px solid #ff0000;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .block-hash {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #ff6666;
+            background: linear-gradient(145deg, #0a0000, #1a0000);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid #330000;
+            text-shadow: 0 0 3px rgba(255, 102, 102, 0.3);
+        }
+
+        .transactions {
+            margin-top: 20px;
+        }
+
+        .transaction {
+            background: linear-gradient(145deg, #0a0a00, #1a0000);
+            border-left: 4px solid #ff3333;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 0 8px 8px 0;
+            color: #ff9999;
+            font-family: 'Metal Mania', cursive;
+            text-shadow: 0 0 3px rgba(255, 153, 153, 0.3);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #ff6666;
+            font-family: 'Metal Mania', cursive;
+        }
+
+        .spinner {
+            border: 4px solid #330000;
+            border-top: 4px solid #ff0000;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: linear-gradient(145deg, #0a1a0a, #001a00);
+            color: #66ff66;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 2px solid #009900;
+            font-family: 'Metal Mania', cursive;
+            text-shadow: 0 0 5px rgba(102, 255, 102, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .error-message {
+            background: linear-gradient(145deg, #1a0a0a, #1a0000);
+            color: #ff6666;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 2px solid #cc0000;
+            font-family: 'Metal Mania', cursive;
+            text-shadow: 0 0 5px rgba(255, 102, 102, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .wallet-info {
+            background: linear-gradient(145deg, #000a1a, #00001a);
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #6699ff;
+            border: 2px solid #003366;
+            text-shadow: 0 0 3px rgba(102, 153, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .deadman-logo {
+            width: 120px;
+            height: 120px;
+            margin-right: 30px;
+            filter: drop-shadow(0 0 25px rgba(255, 0, 0, 1)) drop-shadow(0 0 50px rgba(255, 0, 0, 0.8));
+            transition: all 0.3s ease;
+            animation: logoFloat 4s ease-in-out infinite;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(1deg); }
+            50% { transform: translateY(-12px) rotate(0deg); }
+            75% { transform: translateY(-8px) rotate(-1deg); }
+        }
+
+        .deadman-logo:hover {
+            filter: drop-shadow(0 0 40px rgba(255, 0, 0, 1)) drop-shadow(0 0 70px rgba(255, 0, 0, 1));
+            transform: scale(1.15) rotate(3deg);
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            animation: ominousGlow 4s ease-in-out infinite alternate;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .header-container::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,0,0,0.1) 0%, transparent 70%);
+            animation: rotateAura 8s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes rotateAura {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes ominousGlow {
+            from {
+                text-shadow: 
+                    0 0 10px #ff0000,
+                    0 0 20px #ff0000, 
+                    0 0 30px #ff0000,
+                    0 0 40px #ff0000;
+                filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.8));
+            }
+            to {
+                text-shadow: 
+                    0 0 20px #ff3333,
+                    0 0 30px #ff3333, 
+                    0 0 40px #ff3333,
+                    0 0 50px #ff3333,
+                    0 0 60px #ff0000;
+                filter: drop-shadow(0 0 25px rgba(255, 0, 0, 1));
+            }
+        }
+
+        .deadman-title {
+            margin: 0;
+            color: #ff0000;
+            font-size: 4.5rem;
+            font-weight: bold;
+            font-family: 'Nosifer', 'Creepster', cursive;
+            text-shadow: 
+                0 0 10px #ff0000,
+                0 0 20px #ff0000,
+                0 0 30px #ff0000,
+                0 0 40px #ff0000,
+                0 0 50px #ff0000,
+                2px 2px 0px #000000,
+                -2px -2px 0px #000000,
+                2px -2px 0px #000000,
+                -2px 2px 0px #000000;
+            letter-spacing: 4px;
+            animation: textFlicker 2s ease-in-out infinite alternate;
+            stroke: #000000;
+            -webkit-text-stroke: 2px #000000;
+        }
+        
+        @keyframes textFlicker {
+            0%, 100% { 
+                opacity: 1; 
+                text-shadow: 
+                    0 0 10px #ff0000,
+                    0 0 20px #ff0000,
+                    0 0 30px #ff0000,
+                    0 0 40px #ff0000,
+                    0 0 50px #ff0000,
+                    2px 2px 0px #000000,
+                    -2px -2px 0px #000000,
+                    2px -2px 0px #000000,
+                    -2px 2px 0px #000000;
+            }
+            25% { 
+                opacity: 0.8; 
+                text-shadow: 
+                    0 0 15px #ff3333,
+                    0 0 25px #ff3333,
+                    0 0 35px #ff3333,
+                    0 0 45px #ff3333,
+                    0 0 55px #ff3333,
+                    2px 2px 0px #000000,
+                    -2px -2px 0px #000000,
+                    2px -2px 0px #000000,
+                    -2px 2px 0px #000000;
+            }
+            50% { 
+                opacity: 1; 
+                text-shadow: 
+                    0 0 20px #ff0000,
+                    0 0 30px #ff0000,
+                    0 0 40px #ff0000,
+                    0 0 50px #ff0000,
+                    0 0 60px #ff0000,
+                    2px 2px 0px #000000,
+                    -2px -2px 0px #000000,
+                    2px -2px 0px #000000,
+                    -2px 2px 0px #000000;
+            }
+            75% { 
+                opacity: 0.9; 
+                text-shadow: 
+                    0 0 12px #ff6666,
+                    0 0 22px #ff6666,
+                    0 0 32px #ff6666,
+                    0 0 42px #ff6666,
+                    0 0 52px #ff6666,
+                    2px 2px 0px #000000,
+                    -2px -2px 0px #000000,
+                    2px -2px 0px #000000,
+                    -2px 2px 0px #000000;
+            }
+        }
+
+        .deadman-subtitle {
+            margin: 5px 0 0 0;
+            font-size: 1.3rem;
+            opacity: 0.9;
+            color: #ff6666;
+            font-family: 'Metal Mania', cursive;
+            text-shadow: 0 0 10px rgba(255, 102, 102, 0.5);
+            letter-spacing: 1px;
+        }
+        
+        .founder-info {
+            margin: 8px 0 0 0;
+            font-size: 1.1rem;
+            color: #ffaa66;
+            font-family: 'Metal Mania', cursive;
+            text-shadow: 0 0 8px rgba(255, 170, 102, 0.6);
+            letter-spacing: 1px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+            }
+
+            .controls {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-container">
+                <img src="deadman-logo.svg" alt="DEADMAN Logo" class="deadman-logo">
+                <div>
+                    <h1 class="deadman-title">💀 DEADMAN</h1>
+                    <p class="deadman-subtitle">⚡ Dark Blockchain Explorer & Soul Transaction Manager ⚡</p>
+                    <p class="founder-info">Founder: Shubham Sawant</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Statistics Dashboard -->
+        <div class="stats-grid" id="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalBlocks">-</div>
+                <div class="stat-label">Total Blocks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalTransactions">-</div>
+                <div class="stat-label">Total Transactions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pendingTx">-</div>
+                <div class="stat-label">Pending Transactions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="difficulty">-</div>
+                <div class="stat-label">Mining Difficulty</div>
+            </div>
+        </div>
+
+        <!-- Control Sections -->
+        <div class="controls">
+            <!-- Wallet Section -->
+            <div class="control-section">
+                <h3>💼 Wallet Manager</h3>
+                <button onclick="generateWallet()">Generate New Wallet</button>
+                <div id="walletResult"></div>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="checkAddress">Check Balance:</label>
+                    <input type="text" id="checkAddress" placeholder="Enter wallet address">
+                    <button onclick="checkBalance()" style="margin-top: 10px;">Check Balance</button>
+                </div>
+                <div id="balanceResult"></div>
+            </div>
+
+            <!-- Transaction Section -->
+            <div class="control-section">
+                <h3>💸 Send Transaction</h3>
+                <div class="form-group">
+                    <label for="fromAddress">From Address:</label>
+                    <input type="text" id="fromAddress" placeholder="Your wallet address">
+                </div>
+                <div class="form-group">
+                    <label for="toAddress">To Address:</label>
+                    <input type="text" id="toAddress" placeholder="Recipient address">
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" placeholder="Amount to send">
+                </div>
+                <div class="form-group">
+                    <label for="privateKey">Private Key:</label>
+                    <input type="password" id="privateKey" placeholder="Your private key">
+                </div>
+                <button onclick="sendTransaction()">Send Transaction</button>
+                <div id="transactionResult"></div>
+            </div>
+
+            <!-- Mining Section -->
+            <div class="control-section">
+                <h3>⛏️ Mining</h3>
+                <div class="form-group">
+                    <label for="minerAddress">Miner Address:</label>
+                    <input type="text" id="minerAddress" placeholder="Address to receive mining reward">
+                </div>
+                <button onclick="mineBlock()">Mine Block</button>
+                <div id="miningResult"></div>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="newDifficulty">Adjust Difficulty:</label>
+                    <select id="newDifficulty">
+                        <option value="1">1 (Easy)</option>
+                        <option value="2" selected>2 (Normal)</option>
+                        <option value="3">3 (Hard)</option>
+                        <option value="4">4 (Very Hard)</option>
+                    </select>
+                    <button onclick="adjustDifficulty()" style="margin-top: 10px;">Update Difficulty</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blockchain Display -->
+        <div class="blockchain-display">
+            <h3>⛓️ Blockchain Blocks</h3>
+            <div id="blockchain">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading blockchain data...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_BASE = 'http://localhost:3001/api';
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadBlockchain();
+            
+            // Auto-refresh every 10 seconds
+            setInterval(() => {
+                loadStats();
+                loadBlockchain();
+            }, 10000);
+        });
+
+        // Load blockchain statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const stats = await response.json();
+                
+                document.getElementById('totalBlocks').textContent = stats.totalBlocks;
+                document.getElementById('totalTransactions').textContent = stats.totalTransactions;
+                document.getElementById('pendingTx').textContent = stats.pendingTransactions;
+                document.getElementById('difficulty').textContent = stats.difficulty;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Load and display blockchain
+        async function loadBlockchain() {
+            try {
+                const response = await fetch(`${API_BASE}/blockchain`);
+                const data = await response.json();
+                
+                const blockchainDiv = document.getElementById('blockchain');
+                blockchainDiv.innerHTML = '';
+                
+                data.chain.forEach((block, index) => {
+                    const blockDiv = document.createElement('div');
+                    blockDiv.className = 'block';
+                    
+                    blockDiv.innerHTML = `
+                        <div class="block-header">
+                            <span class="block-index">Block #${index}</span>
+                            <span class="block-hash">${block.hash.substring(0, 20)}...</span>
+                        </div>
+                        <div><strong>Timestamp:</strong> ${new Date(block.timestamp).toLocaleString()}</div>
+                        <div><strong>Previous Hash:</strong> ${block.previousHash.substring(0, 20)}...</div>
+                        <div><strong>Nonce:</strong> ${block.nonce}</div>
+                        <div class="transactions">
+                            <strong>Transactions (${block.transactions.length}):</strong>
+                            ${block.transactions.map(tx => `
+                                <div class="transaction">
+                                    ${tx.fromAddress ? tx.fromAddress.substring(0, 10) : 'Mining'} → 
+                                    ${tx.toAddress.substring(0, 10)}... 
+                                    (${tx.amount} coins)
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    
+                    blockchainDiv.appendChild(blockDiv);
+                });
+            } catch (error) {
+                console.error('Error loading blockchain:', error);
+                document.getElementById('blockchain').innerHTML = '<div class="error-message">Failed to load blockchain data</div>';
+            }
+        }
+
+        // Generate new wallet
+        async function generateWallet() {
+            try {
+                const response = await fetch(`${API_BASE}/wallet/new`);
+                const wallet = await response.json();
+                
+                document.getElementById('walletResult').innerHTML = `
+                    <div class="success-message">
+                        <strong>New Wallet Generated!</strong><br>
+                        <div class="wallet-info">
+                            <strong>Address:</strong> ${wallet.address}<br>
+                            <strong>Private Key:</strong> ${wallet.privateKey}<br>
+                            <br>
+                            <em>⚠️ Save your private key securely! You will need it to sign transactions.</em>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('walletResult').innerHTML = `
+                    <div class="error-message">Error generating wallet: ${error.message}</div>
+                `;
+            }
+        }
+
+        // Check balance
+        async function checkBalance() {
+            const address = document.getElementById('checkAddress').value;
+            if (!address) {
+                alert('Please enter an address');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/balance/${address}`);
+                const data = await response.json();
+                
+                document.getElementById('balanceResult').innerHTML = `
+                    <div class="success-message">
+                        <strong>Balance:</strong> ${data.balance} coins
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('balanceResult').innerHTML = `
+                    <div class="error-message">Error checking balance: ${error.message}</div>
+                `;
+            }
+        }
+
+        // Send transaction
+        async function sendTransaction() {
+            const fromAddress = document.getElementById('fromAddress').value;
+            const toAddress = document.getElementById('toAddress').value;
+            const amount = document.getElementById('amount').value;
+            const privateKey = document.getElementById('privateKey').value;
+
+            if (!fromAddress || !toAddress || !amount || !privateKey) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/transaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fromAddress,
+                        toAddress,
+                        amount: parseFloat(amount),
+                        privateKey
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('transactionResult').innerHTML = `
+                        <div class="success-message">
+                            <strong>Transaction Sent!</strong><br>
+                            Hash: ${result.transactionHash.substring(0, 20)}...<br>
+                            Status: Pending (waiting for mining)
+                        </div>
+                    `;
+                    
+                    // Clear form
+                    document.getElementById('fromAddress').value = '';
+                    document.getElementById('toAddress').value = '';
+                    document.getElementById('amount').value = '';
+                    document.getElementById('privateKey').value = '';
+                } else {
+                    document.getElementById('transactionResult').innerHTML = `
+                        <div class="error-message">${result.error}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('transactionResult').innerHTML = `
+                    <div class="error-message">Error sending transaction: ${error.message}</div>
+                `;
+            }
+        }
+
+        // Mine block
+        async function mineBlock() {
+            const minerAddress = document.getElementById('minerAddress').value;
+            if (!minerAddress) {
+                alert('Please enter a miner address');
+                return;
+            }
+
+            document.getElementById('miningResult').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Mining block... This may take a while depending on difficulty.
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`${API_BASE}/mine`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ minerAddress })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('miningResult').innerHTML = `
+                        <div class="success-message">
+                            <strong>Block Mined Successfully!</strong><br>
+                            Reward: ${result.reward} coins<br>
+                            Block Hash: ${result.block.hash.substring(0, 20)}...
+                        </div>
+                    `;
+                    
+                    // Refresh data
+                    loadStats();
+                    loadBlockchain();
+                } else {
+                    document.getElementById('miningResult').innerHTML = `
+                        <div class="error-message">${result.error}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('miningResult').innerHTML = `
+                    <div class="error-message">Error mining block: ${error.message}</div>
+                `;
+            }
+        }
+
+        // Adjust mining difficulty
+        async function adjustDifficulty() {
+            const difficulty = document.getElementById('newDifficulty').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/difficulty`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ difficulty: parseInt(difficulty) })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`Difficulty adjusted to ${result.newDifficulty}`);
+                    loadStats();
+                } else {
+                    alert(`Error: ${result.error}`);
+                }
+            } catch (error) {
+                alert(`Error adjusting difficulty: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>

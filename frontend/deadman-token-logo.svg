@@ -1,0 +1,32 @@
+<!-- Simplified DEADMAN Logo for Token -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Dark background -->
+  <circle cx="50" cy="50" r="50" fill="#1a1a1a"/>
+  
+  <!-- Skull -->
+  <g transform="translate(50, 50)">
+    <!-- Skull shape -->
+    <ellipse cx="0" cy="-5" rx="22" ry="25" fill="#f8f8f8"/>
+    
+    <!-- Eye sockets -->
+    <circle cx="-9" cy="-10" r="6" fill="#000"/>
+    <circle cx="9" cy="-10" r="6" fill="#000"/>
+    
+    <!-- Red glowing eyes -->
+    <circle cx="-9" cy="-11" r="2" fill="#ff0000"/>
+    <circle cx="9" cy="-11" r="2" fill="#ff0000"/>
+    
+    <!-- Nose -->
+    <path d="M 0 -2 L -3 5 L 0 8 L 3 5 Z" fill="#000"/>
+    
+    <!-- Teeth -->
+    <rect x="-8" y="10" width="2" height="6" fill="#f8f8f8"/>
+    <rect x="-4" y="10" width="2" height="8" fill="#f8f8f8"/>
+    <rect x="0" y="10" width="2" height="7" fill="#f8f8f8"/>
+    <rect x="4" y="10" width="2" height="8" fill="#f8f8f8"/>
+    <rect x="8" y="10" width="2" height="6" fill="#f8f8f8"/>
+  </g>
+  
+  <!-- Border -->
+  <circle cx="50" cy="50" r="48" fill="none" stroke="#ff0000" stroke-width="2"/>
+</svg>
